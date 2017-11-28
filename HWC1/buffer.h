@@ -23,7 +23,6 @@ typedef struct buffer{
 	int size;				 //dimensioni del buffer
 	pthread_mutex_t uso_D;	// mutex associato all'indice di produzione
 	pthread_mutex_t uso_T;	// mutex associato all'indice di consumazione
-	int contatoreMessaggi;  //contatore dei messaggi nel buffer
 	sem_t* piene;			//semaforo per gestire l'accesso al buffer
 	sem_t* vuote;			//semaforo per gestire l'accesso al buffer
 

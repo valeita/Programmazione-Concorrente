@@ -17,10 +17,8 @@ buffer_t* buffer_init(unsigned int maxsize){
 	new_buffer->coda = malloc(sizeof(msg_t)*maxsize);
 
 	new_buffer->size = maxsize;
-	new_buffer->contatoreMessaggi=0;
 	new_buffer->T = 0;
 	new_buffer->D = 0;
-
 	pthread_mutex_init(&(new_buffer->uso_T),NULL);
 	pthread_mutex_init(&(new_buffer->uso_D),NULL);
 
@@ -58,7 +56,6 @@ msg_t* put_bloccante(buffer_t* buffer, msg_t* msg){
 		pthread_mutex_lock(&buffer->uso_D);
 			buffer->coda[buffer->D] = *copia;
 			buffer->D = (buffer->D + 1) % (buffer->size);
-			buffer->contatoreMessaggi = buffer->contatoreMessaggi + 1;
 		pthread_mutex_unlock(&buffer->uso_D);
 	sem_post(buffer->piene);
 
@@ -79,7 +76,6 @@ msg_t* put_non_bloccante(buffer_t* buffer, msg_t* msg){
 		pthread_mutex_lock(&buffer->uso_D);
 			buffer->coda[buffer->D] = *copia;
 			buffer->D = (buffer->D + 1) % (buffer->size);
-			buffer->contatoreMessaggi = buffer->contatoreMessaggi + 1;
 		pthread_mutex_unlock(&buffer->uso_D);
 	sem_post(buffer->piene);
 
@@ -92,11 +88,11 @@ msg_t* put_non_bloccante(buffer_t* buffer, msg_t* msg){
 // restituisce il valore estratto non appena disponibile
 msg_t* get_bloccante(buffer_t* buffer){
 
+
 	sem_wait(buffer->piene);
 		pthread_mutex_lock(&buffer->uso_T);
 			msg_t* msg = &(buffer->coda[buffer->T]);
 			buffer->T = (buffer->T + 1) % (buffer->size);
-			buffer->contatoreMessaggi = buffer->contatoreMessaggi - 1;
 		pthread_mutex_unlock(&buffer->uso_T);
 	sem_post(buffer->vuote);
 
@@ -114,7 +110,6 @@ msg_t* get_non_bloccante(buffer_t* buffer){
 		pthread_mutex_lock(&buffer->uso_T);
 			msg_t* msg = &(buffer->coda[buffer->T]);
 			buffer->T = (buffer->T + 1) % (buffer->size);
-			buffer->contatoreMessaggi = buffer->contatoreMessaggi - 1;
 		pthread_mutex_unlock(&buffer->uso_T);
 	sem_post(buffer->vuote);
 

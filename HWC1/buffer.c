@@ -50,16 +50,14 @@ void buffer_destroy(buffer_t* buffer){
 // restituisce il messaggio inserito; N.B.: msg!=null
 msg_t* put_bloccante(buffer_t* buffer, msg_t* msg){
 
-	msg_t* copia = msg_copy_string(msg);
-
 	sem_wait(buffer->vuote);
 		pthread_mutex_lock(&buffer->uso_D);
-			buffer->coda[buffer->D] = *copia;
+			buffer->coda[buffer->D] = *msg;
 			buffer->D = (buffer->D + 1) % (buffer->size);
 		pthread_mutex_unlock(&buffer->uso_D);
 	sem_post(buffer->piene);
 
-	return copia;
+	return msg;
 }
 
 
@@ -70,16 +68,14 @@ msg_t* put_bloccante(buffer_t* buffer, msg_t* msg){
 // inserito; N.B.: msg!=null
 msg_t* put_non_bloccante(buffer_t* buffer, msg_t* msg){
 
-	msg_t* copia = msg_copy_string(msg);
-
-	if (sem_trywait(buffer->vuote) == -1){ msg_destroy_string(copia); return BUFFER_ERROR};
+	if (sem_trywait(buffer->vuote) == -1){ return BUFFER_ERROR};
 		pthread_mutex_lock(&buffer->uso_D);
-			buffer->coda[buffer->D] = *copia;
+			buffer->coda[buffer->D] = *msg;
 			buffer->D = (buffer->D + 1) % (buffer->size);
 		pthread_mutex_unlock(&buffer->uso_D);
 	sem_post(buffer->piene);
 
-		return copia;
+		return msg;
 }
 
 
@@ -88,15 +84,14 @@ msg_t* put_non_bloccante(buffer_t* buffer, msg_t* msg){
 // restituisce il valore estratto non appena disponibile
 msg_t* get_bloccante(buffer_t* buffer){
 
-
 	sem_wait(buffer->piene);
 		pthread_mutex_lock(&buffer->uso_T);
-			msg_t* msg = &(buffer->coda[buffer->T]);
+			msg_t* m = msg_init_string(buffer->coda[buffer->T].content);
 			buffer->T = (buffer->T + 1) % (buffer->size);
 		pthread_mutex_unlock(&buffer->uso_T);
 	sem_post(buffer->vuote);
 
-	return msg;
+	return m;
 }
 
 
@@ -108,11 +103,11 @@ msg_t* get_non_bloccante(buffer_t* buffer){
 
 	if(sem_trywait(buffer->piene) == -1){ return BUFFER_ERROR;}
 		pthread_mutex_lock(&buffer->uso_T);
-			msg_t* msg = &(buffer->coda[buffer->T]);
+			msg_t* m = msg_init_string(buffer->coda[buffer->T].content);
 			buffer->T = (buffer->T + 1) % (buffer->size);
 		pthread_mutex_unlock(&buffer->uso_T);
 	sem_post(buffer->vuote);
 
-	return msg;
+	return m;
 }
 

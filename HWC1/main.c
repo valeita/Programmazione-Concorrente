@@ -27,6 +27,8 @@ void test_produzione_bloccante_unico_messaggio_in_buffer_vuoto(){
 	msg_t* messaggio_da_inserire = msg_init_string("zero");
 	msg_t* messaggio_inserito = put_bloccante(buffer,messaggio_da_inserire);
 	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire->content,messaggio_inserito->content);
+	CU_ASSERT_PTR_EQUAL(messaggio_inserito,messaggio_da_inserire);
+
 	msg_destroy_string(messaggio_da_inserire);
 
 }
@@ -35,9 +37,9 @@ void test_produzione_bloccante_unico_messaggio_in_buffer_vuoto(){
 void test_produzione_non_bloccante_unico_messaggio_in_buffer_vuoto(){
 
 	msg_t* messaggio_da_inserire = msg_init_string("zero");
-
 	msg_t* messaggio_inserito = put_non_bloccante(buffer,messaggio_da_inserire);
 	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire->content,messaggio_inserito->content);
+	CU_ASSERT_PTR_EQUAL(messaggio_inserito,messaggio_da_inserire);
 
 	msg_destroy_string(messaggio_da_inserire);
 
@@ -117,6 +119,7 @@ void consumazione_non_bloccante_da_buffer_vuoto(){
 
 }
 
+
 //CONSUMATORE USA E GETTA
 msg_t* get_bloccante_thread(void){
 
@@ -146,13 +149,11 @@ void consumazione_produzione_non_bloccante_unico_messaggio_buffer_unitario_prima
 	pthread_t consumatore_1, produttore_1;
 	msg_t* messaggio_da_inserire = msg_init_string("prova");
 	msg_t* messaggio_consumato = NULL;
-	msg_t* messaggio_prodotto = NULL;
 
 	pthread_create(&consumatore_1, NULL, &get_non_bloccante_thread, NULL);
 	pthread_join(consumatore_1,&messaggio_consumato);
 	pthread_create(&produttore_1, NULL, &put_non_bloccante_thread, messaggio_da_inserire);
-	pthread_join(produttore_1,&messaggio_prodotto);
-
+	pthread_join(produttore_1,NULL);
 	CU_ASSERT_PTR_NULL(messaggio_consumato);
 
 	msg_destroy_string(messaggio_da_inserire);
@@ -175,6 +176,7 @@ void consumazione_produzione_bloccante_buffer_unitario_prima_produttore(){
 
 	CU_ASSERT_STRING_EQUAL(messaggio_consumato->content,messaggio_prodotto->content);
 
+	msg_destroy_string(messaggio_consumato);
 	msg_destroy_string(messaggio_da_inserire);
 }
 
@@ -344,11 +346,14 @@ void consumazione_produzione_bloccante_molteplici_messaggi_buffer_unitario(){
 	CU_ASSERT_PTR_NOT_NULL(messaggio_consumato_1);
 	CU_ASSERT_PTR_NOT_NULL(messaggio_consumato_2);
 
+	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire_1->content,messaggio_consumato_1->content);
+	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire_2->content,messaggio_consumato_2->content);
+
+	msg_destroy_string(messaggio_consumato_1);
+	msg_destroy_string(messaggio_consumato_2);
 	msg_destroy_string(messaggio_da_inserire_1);
 	msg_destroy_string(messaggio_da_inserire_2);
-
 }
-
 
 
 

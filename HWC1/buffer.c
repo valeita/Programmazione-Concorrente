@@ -4,8 +4,7 @@
  *  Created on: 20 nov 2017
  *      Author: valerio
  */
-#include "msg.h"
-#include <stdlib.h>
+
 #include "buffer.h"
 
 

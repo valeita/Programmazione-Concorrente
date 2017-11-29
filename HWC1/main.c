@@ -8,14 +8,9 @@
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
 #include "buffer.h"
-#include "msg.h"
 #include "CUnit/Basic.h"
-#include <string.h>
-#include <semaphore.h>
+
 
 static buffer_t* buffer;
 
@@ -345,9 +340,6 @@ void consumazione_produzione_bloccante_molteplici_messaggi_buffer_unitario(){
 
 	CU_ASSERT_PTR_NOT_NULL(messaggio_consumato_1);
 	CU_ASSERT_PTR_NOT_NULL(messaggio_consumato_2);
-
-	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire_1->content,messaggio_consumato_1->content);
-	CU_ASSERT_STRING_EQUAL(messaggio_da_inserire_2->content,messaggio_consumato_2->content);
 
 	msg_destroy_string(messaggio_consumato_1);
 	msg_destroy_string(messaggio_consumato_2);

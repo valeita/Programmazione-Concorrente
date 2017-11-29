@@ -5,9 +5,6 @@
  *      Author: valerio
  */
 
-
-#include <stdlib.h>
-#include <string.h>
 #include "msg.h"
 
 

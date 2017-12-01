@@ -172,7 +172,6 @@ void consumazione_bloccante_da_buffer_vuoto(){
 		sleep(5);		//violazione dell'assunzione di progresso finito, fatto solo				//sollecitazione
 						//esclusivamente e consapevolmente per il testing del codice
 
-		CU_ASSERT_EQUAL(buffer->D,0);
 		CU_ASSERT_EQUAL(buffer->T,0);															//verifica
 		pthread_create(&produttore, NULL, &put_bloccante_thread, messaggio_da_inserire);
 		pthread_join(produttore,&messaggio_prodotto);

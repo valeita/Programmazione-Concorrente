@@ -1,10 +1,3 @@
-/*
- * buffer.h
- *
- *  Created on: 20 nov 2017
- *      Author: valerio
- */
-
 #ifndef buffer_h
 #define buffer_h
 
@@ -22,8 +15,8 @@ typedef struct buffer{
 	int size;				 //dimensioni del buffer
 	pthread_mutex_t uso_D;	// mutex associato all'indice di produzione
 	pthread_mutex_t uso_T;	// mutex associato all'indice di consumazione
-	sem_t* piene;			//semaforo per gestire l'accesso al buffer
-	sem_t* vuote;			//semaforo per gestire l'accesso al buffer
+	sem_t* piene;			//semaforo per gestire l'accesso al buffer. inizializzato a 0.
+	sem_t* vuote;			//semaforo per gestire l'accesso al buffer. inizializzato a size.
 
 }buffer_t;
 

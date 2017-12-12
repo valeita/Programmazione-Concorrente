@@ -73,7 +73,7 @@ void test_requestor_invio_messaggi_buffer_accepter(){
 //e relativa creazione di reader rispettivamente con inserimento nella lista dei reader
 void test_accepter_ricezione_richiesta_e_poison_pill(){
 
-	pthread_t requestor_1,requestor_2, requestor_3, accepter;																			//set-up
+	pthread_t requestor_1,requestor_2, requestor_3, accepter;																//set-up
 	list_init_concurrent();
 	msg_t* messaggio_da_inserire_1 = msg_init_string("reader_1");
 	msg_t* messaggio_da_inserire_2 = msg_init_string("reader_2");
@@ -178,7 +178,7 @@ void test_dispatcher_prelevamento_e_inoltro_messaggi_molteplici_reader_di_cui_un
 	CU_ASSERT_STRING_EQUAL(reader_messaggi_2->my_buffer_reader->coda[1].content,messaggio_2->content);
 	CU_ASSERT_PTR_EQUAL(reader_messaggi_2->my_buffer_reader->coda[2].content,POISON_PILL->content);						//verifica
 
-	CU_ASSERT_EQUAL(messaggi_letti,2);		//ha letto il messaggio che gia c'era, e poi la poison pill inviata dal dispatcher
+	CU_ASSERT_EQUAL(messaggi_letti,2);		//ha letto il messaggio che gia c'era, e poi la poison pill inviata dal dispatcher, poichè subito eliminato
 	CU_ASSERT_PTR_EQUAL(reader_messaggi_1->my_buffer_reader->coda[0].content,POISON_PILL->content);
 
 	dealloca_reader(reader_messaggi_1);
@@ -199,18 +199,18 @@ void test_prelevamento_messaggi_e_rimozione_dalla_lista_reader(){
 
 	pthread_t reader;
 	msg_t* messaggio_da_inserire = msg_init_string("prodotto_1");
-	reader_msg* reader_messaggi = inizializzazione_reader("reader_1");											//set-up
+	reader_msg* reader_messaggi = inizializzazione_reader("reader_1");												//set-up
 	add_element_concurrent(reader_messaggi);
 	CU_ASSERT(size(lista_nodi_reader)==1);
 	put_bloccante(reader_messaggi->my_buffer_reader, messaggio_da_inserire);
 	put_bloccante(reader_messaggi->my_buffer_reader, POISON_PILL);
 
-	pthread_create(&reader,NULL,&avvia_reader_di_messaggi_per_testing,reader_messaggi);											//sollecitazione
+	pthread_create(&reader,NULL,&avvia_reader_di_messaggi_per_testing,reader_messaggi);								//sollecitazione
 	pthread_join(reader,NULL);
 
 	CU_ASSERT_EQUAL(reader_messaggi->my_buffer_reader->T,2);
 	CU_ASSERT_STRING_EQUAL(reader_messaggi->my_buffer_reader->coda[0].content,messaggio_da_inserire->content);
-	CU_ASSERT_PTR_EQUAL(reader_messaggi->my_buffer_reader->coda[1].content,POISON_PILL->content);
+	CU_ASSERT_PTR_EQUAL(reader_messaggi->my_buffer_reader->coda[1].content,POISON_PILL->content);						//verifica
 	CU_ASSERT(size(lista_nodi_reader)==0);
 
 	dealloca_reader(reader_messaggi);
@@ -223,6 +223,7 @@ void test_prelevamento_messaggi_e_rimozione_dalla_lista_reader(){
 
 void test_main(){
 
+
 	buffer_provider_init(3);
 	buffer_accepter_init(3);
 	list_init_concurrent();
@@ -230,7 +231,7 @@ void test_main(){
 	msg_t* messaggio_1 = msg_init_string("prodotto_1");
 	msg_t* messaggio_2 = msg_init_string("prodotto_2");
 	inserimento_messaggio_nel_blocco(blocco, messaggio_1);
-	inserimento_messaggio_nel_blocco(blocco, messaggio_2);													//set-up
+	inserimento_messaggio_nel_blocco(blocco, messaggio_2);																		//set-up
 	msg_t* messaggio_da_inserire_1 = msg_init_string("reader_1");
 	msg_t* messaggio_da_inserire_2 = msg_init_string("reader_2");
 
@@ -273,7 +274,7 @@ void test_main(){
 	pthread_create(&dispatcher,NULL,&accetta_e_inoltra,NULL);
 	pthread_join(dispatcher,NULL);
 
-	sleep(5);		//violazione dell'assunzione di progresso finito fatto per scopi di testing
+	//sleep(5);		//violazione dell'assunzione di progresso finito fatto per scopi di testing
 
 	CU_ASSERT_STRING_EQUAL(buffer_provider->coda[0].content,messaggio_1->content);
 	CU_ASSERT_STRING_EQUAL(buffer_provider->coda[1].content,messaggio_2->content);
@@ -283,6 +284,8 @@ void test_main(){
 	CU_ASSERT_STRING_EQUAL(buffer_accepter->coda[0].content,messaggio_da_inserire_1->content);
 	CU_ASSERT_STRING_EQUAL(buffer_accepter->coda[1].content,messaggio_da_inserire_2->content);
 	CU_ASSERT_PTR_EQUAL(buffer_accepter->coda[2].content,POISON_PILL->content);
+
+	controlla_reader_ancora_esistenti();
 
 	CU_ASSERT(size_concurrent() == 0);
 
@@ -295,6 +298,7 @@ void test_main(){
 	list_destroy_concurrent(lista_nodi_reader);
 	buffer_destroy(buffer_accepter);
 	buffer_destroy(buffer_provider);
+
 }
 
 

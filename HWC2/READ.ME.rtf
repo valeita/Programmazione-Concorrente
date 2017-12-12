@@ -18,8 +18,7 @@ Ulteriore caratteristica che forse difficilmente viene messa in evidenza dal cod
 Nel caso in cui al dispatcher, nell'invio di un messaggio in broadcast, ritorna un messaggio BUFFER_ERROR, indica che il buffer del reader \'e8 saturo, e questo implica che tale reader \'e8 "lento" nella consumazione dei messaggi.\
 La rimozione che ne consegue inoltre, viene fatta da un fde chiamato in aiuto dal dispatcher stesso, che si metter\'e0 in attesa di inviare una poison pill al reader lento. Questa soluzione, rispetta in pieno le specifiche in quanto il dispatcher non sar\'e0 rallentato da eventuali reader.\
 \
-Per quanto riguarda la lista di reader, ho preso nota che viene acceduta dall'accepter per l'aggiunta di un elemento, e dal dispatcher per la relativa scansione.\
-Ho pertanto deciso di utilizzare un mutex condiviso tra i due, per la mutua esclusione di queste due operazioni.\
+Per quanto riguarda la gestione della lista non thread-safe, ho deciso di utilizzare un mutex che facesse accedere in mutua esclusione i flussi di esecuzione interessati a questa risorsa condivisa.\
 \
-Per l'esecuzione \'e8 richiesto di aspettare un totale di 2 sleep di 4 secondi ciascuna (necessario per testare un reader lento), e una sleep di 5 secondi(necessaria per verificare alcune precondizioni).\
+Per l'esecuzione \'e8 richiesto di aspettare un totale di 2 sleep di 4 secondi ciascuna (necessario per testare un reader lento).\
  La violazione dell'assunzione di progresso finito \'e8 stata svolta per scopo di testing.}

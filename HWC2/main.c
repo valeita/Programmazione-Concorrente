@@ -23,10 +23,27 @@ int main(){
 
 
 
+void controlla_reader_ancora_esistenti(){
+
+	pthread_mutex_lock(&mutex_list);
+	iterator_t* iterator = iterator_init(lista_nodi_reader);
+
+	while(hasNext(iterator)){
+
+		reader_msg* reader_attuale = (reader_msg*)(next(iterator));
+		put_bloccante_buffer_reader(reader_attuale->my_buffer_reader, POISON_PILL);
+	}
+	iterator_destroy(iterator);
+	pthread_mutex_unlock(&mutex_list);
+
+	while(size_concurrent()>0){}
+}
 
 
 
-//
+
+
+
 void flusso_main_principale(){
 
 	buffer_provider_init(3);
@@ -74,6 +91,7 @@ void flusso_main_principale(){
 	pthread_join(requestor_poison,NULL);
 	pthread_join(dispatcher,NULL);
 
+	controlla_reader_ancora_esistenti();
 
 	msg_destroy_string(messaggio_da_inserire_1);
 	msg_destroy_string(messaggio_da_inserire_2);
@@ -84,3 +102,7 @@ void flusso_main_principale(){
 	buffer_destroy(buffer_accepter);
 	buffer_destroy(buffer_provider);
 }
+
+
+
+

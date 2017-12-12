@@ -21,8 +21,7 @@ int main(){
 }
 
 
-
-
+//questo metodo controlla se ci sono ancora reader esistenti, e gli invia una poison pill in tal caso.
 void controlla_reader_ancora_esistenti(){
 
 	pthread_mutex_lock(&mutex_list);
@@ -37,6 +36,7 @@ void controlla_reader_ancora_esistenti(){
 	pthread_mutex_unlock(&mutex_list);
 
 	while(size_concurrent()>0){}
+	sleep(1);
 }
 
 
@@ -44,6 +44,9 @@ void controlla_reader_ancora_esistenti(){
 
 
 
+
+// flusso di esecuzione main principale:
+//Questo flusso ha la responsabilit`a di creare il sistema di flussi descritto, e di gestire attivamente il transitorio di chiusura finale
 void flusso_main_principale(){
 
 	buffer_provider_init(3);
@@ -102,7 +105,3 @@ void flusso_main_principale(){
 	buffer_destroy(buffer_accepter);
 	buffer_destroy(buffer_provider);
 }
-
-
-
-

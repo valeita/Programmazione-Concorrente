@@ -84,7 +84,7 @@ int avvia_reader_di_messaggi_per_testing_reader_lento(reader_msg* reader){
 	}
 	contatore_messaggi_letti++;
 	remove_element_concurrent(reader);
-	//dealloca_reader(reader);
+
 	return contatore_messaggi_letti;
 }
 

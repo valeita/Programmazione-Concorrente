@@ -36,7 +36,6 @@ void controlla_reader_ancora_esistenti(){
 	pthread_mutex_unlock(&mutex_list);
 
 	while(size_concurrent()>0){}
-	sleep(1);
 }
 
 

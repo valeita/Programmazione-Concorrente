@@ -6,7 +6,7 @@
  */
 
 #include "reader.h"
-
+#include "reader_list.h"
 
 
 //prelevamento dei messaggi dal suo buffer personale e rimozione dalla lista alla ricezione del poison pill
@@ -16,8 +16,10 @@ void avvia_reader_di_messaggi(reader_msg* reader){
 
 	while((messaggio = get_buffer_reader(reader->my_buffer_reader)) != NULL){  }
 
-	remove_element_concurrent(reader);
-	dealloca_reader(reader);
+	pthread_mutex_lock(&mutex_list);
+		removeElement(lista_nodi_reader, reader);
+		dealloca_reader(reader);
+	pthread_mutex_unlock(&mutex_list);
 }
 
 
@@ -30,7 +32,6 @@ void avvia_reader_di_messaggi_per_testing(reader_msg* reader){
 	while((messaggio = get_buffer_reader(reader->my_buffer_reader)) != NULL){  }
 
 	remove_element_concurrent(reader);
-	//dealloca_reader(reader);				//la deallocazione del reader "dovrebbe" avvenire qui, tuttavia per eseguire i test, commento questa riga e dealloco nei test
 }
 
 

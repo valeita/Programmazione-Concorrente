@@ -297,6 +297,12 @@ void test_main(){
 }
 
 
+//testing del flusso main completo.
+void test_main_completo(){
+
+	flusso_main_principale();
+}
+
 
 
 // inizializzazione del buffer_provider
@@ -350,9 +356,11 @@ int test(){
     pSuite = CU_add_suite("Suite_reader_1", init_list, clean_list);
     CU_add_test(pSuite, "testing del funzionamento di un reader che preleva dal suo buffer i messaggi e si autorimuove dalla lista.",test_prelevamento_messaggi_e_rimozione_dalla_lista_reader);
 
-    pSuite = CU_add_suite("Suite_main", init_nothing, clean_nothing);
+    pSuite = CU_add_suite("Suite_main_1", init_nothing, clean_nothing);
     CU_add_test(pSuite, "test flusso principale main",test_main);
 
+    pSuite = CU_add_suite("Suite_main_2", init_nothing, clean_nothing);
+    CU_add_test(pSuite, "test flusso principale main completo",test_main_completo);
 
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();

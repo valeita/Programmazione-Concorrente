@@ -6,7 +6,6 @@
  */
 
 #include "dispatcher.h"
-#include "provider_buffer.h"
 
 
 //funzione di supporto al dispatcher. nel casoin cui un un reader va troppo lento, il dispatcher lo elimina dalla lista
@@ -21,11 +20,16 @@ void elimina_reader(reader_msg* reader){
 //il dispatcher avendo ricevuto la poison pill dal buffer_provider, la inoltra a tutti i suoi reader.
 void propaga_poison_pill(){
 
-	pthread_mutex_lock(&mutex_list);
-	iterator_t* iterator = iterator_init(lista_nodi_reader);
+	iterator_t* iterator = iterator_init_concurrent();
 
-	while(hasNext(iterator)){
+	while(1){
 
+		pthread_mutex_lock(&mutex_list);
+
+		if(hasNext(iterator) == 0){
+			pthread_mutex_unlock(&mutex_list);
+			return;
+		}
 		reader_msg* reader_attuale = (reader_msg*)(next(iterator));
 		msg_t* messaggio_di_ritorno = put_non_bloccante_buffer_reader(reader_attuale->my_buffer_reader, POISON_PILL);
 
@@ -35,9 +39,9 @@ void propaga_poison_pill(){
 			pthread_t aiutante;
 			pthread_create(&aiutante,NULL,&elimina_reader,reader_attuale);
 		}
+		pthread_mutex_unlock(&mutex_list);
 	}
 	iterator_destroy(iterator);
-	pthread_mutex_unlock(&mutex_list);
 }
 
 
@@ -53,11 +57,17 @@ void sostituisci_readers(msg_t* messaggio){
 //controlla inoltra che essa sia vuota, poichè in tal caso sarà compito suo quello di consumare il messaggio
 void scandisci_lista_e_invia_messaggio_broadcast(msg_t* messaggio){
 
-	pthread_mutex_lock(&mutex_list);
-	iterator_t* iterator = iterator_init(lista_nodi_reader);
+	if(size_concurrent()==0) {sostituisci_readers(messaggio); return;}
+	iterator_t* iterator = iterator_init_concurrent();
 
-	while(hasNext(iterator)){
+	while(1){
 
+		pthread_mutex_lock(&mutex_list);
+
+		if(hasNext(iterator) == 0){
+			pthread_mutex_unlock(&mutex_list);
+			return;
+		}
 		reader_msg* reader_attuale = (reader_msg*)(next(iterator));
 		msg_t* messaggio_di_ritorno = put_non_bloccante_buffer_reader(reader_attuale->my_buffer_reader, messaggio);
 
@@ -67,11 +77,9 @@ void scandisci_lista_e_invia_messaggio_broadcast(msg_t* messaggio){
 			pthread_t aiutante;
 			pthread_create(&aiutante,NULL,&elimina_reader,reader_attuale);
 		}
+		pthread_mutex_unlock(&mutex_list);
 	}
-	if(size(lista_nodi_reader)==0) {sostituisci_readers(messaggio);}
-
 	iterator_destroy(iterator);
-	pthread_mutex_unlock(&mutex_list);
 }
 
 

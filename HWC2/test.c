@@ -223,7 +223,6 @@ void test_prelevamento_messaggi_e_rimozione_dalla_lista_reader(){
 //test del flusso di esecuzione principale main, controllando che il sistema si comporti nel modo aspettato
 void test_main(){
 
-
 	buffer_provider_init(3);
 	buffer_accepter_init(3);
 	list_init_concurrent();

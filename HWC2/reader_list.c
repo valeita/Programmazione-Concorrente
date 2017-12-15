@@ -36,10 +36,10 @@ void add_element_concurrent(reader_msg* reader){
 }
 
 //rimuove un elemento dalla lista in mutua esclusione.
-void remove_element_concurrent(reader_msg* reader){
+void remove_element_concurrent(void* element){
 
 	pthread_mutex_lock(&mutex_list);
-		removeElement(lista_nodi_reader, reader);
+		removeElement(lista_nodi_reader, element);
 	pthread_mutex_unlock(&mutex_list);
 }
 
@@ -51,4 +51,14 @@ int size_concurrent(){
 		int dim = size(lista_nodi_reader);
 	pthread_mutex_unlock(&mutex_list);
 	return dim;
+}
+
+//creazione dell'iteratore in modo concorrente
+iterator_t* iterator_init_concurrent(){
+
+	pthread_mutex_lock(&mutex_list);
+			iterator_t* it = iterator_init(lista_nodi_reader);
+	pthread_mutex_unlock(&mutex_list);
+	return it;
+
 }

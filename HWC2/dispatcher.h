@@ -12,6 +12,7 @@
 #include "stdlib.h"
 #include "msg.h"
 #include "reader_list.h"
+#include "provider_buffer.h"
 
 
 //funzione di supporto al dispatcher. nel casoin cui un un reader va troppo lento, il dispatcher lo elimina dalla lista

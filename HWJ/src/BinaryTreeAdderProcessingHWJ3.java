@@ -16,7 +16,7 @@ public class BinaryTreeAdderProcessingHWJ3  implements BinaryTreeAdder{
 	public int computeOnerousSum(Node root) {
 	
 		int sum = 0;
-		final ForkJoinPool pool = new ForkJoinPool(ncpu);
+		ForkJoinPool pool = new ForkJoinPool(ncpu);
 		
 		sum += pool.invoke(new TaskHWJ3(root));
 		

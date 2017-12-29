@@ -1,7 +1,15 @@
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class TaskHWJ4<T> implements Spliterator<T>{
+
+public class TreeCollectionHWJ4<T> implements Spliterator<T> {
+
+	private Node node;
+
+	public TreeCollectionHWJ4(Node node) {
+		
+		this.node = node;
+	}
 
 	@Override
 	public boolean tryAdvance(Consumer<? super T> action) {
@@ -27,4 +35,7 @@ public class TaskHWJ4<T> implements Spliterator<T>{
 		return 0;
 	}
 
+	
+	
+	
 }

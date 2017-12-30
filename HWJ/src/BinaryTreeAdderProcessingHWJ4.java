@@ -14,7 +14,7 @@ public class BinaryTreeAdderProcessingHWJ4 implements BinaryTreeAdder{
 		Stream<Node> stream = StreamSupport.stream(spliterator, true); //mettendo false ritorna uno stream sequenziale. utile per lo speed-up
 		
 		int sum = stream.parallel().mapToInt(w-> new FakeProcessor(1500).onerousFunction(w.getValue())).sum();
-		
+
 		return sum;
 	}
 

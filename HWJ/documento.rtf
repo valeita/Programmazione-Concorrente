@@ -1,0 +1,160 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Monaco;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;\red27\green31\blue34;}
+{\*\expandedcolortbl;;\cssrgb\c14118\c16078\c18039;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28600\viewh15440\viewkind0
+\deftab720
+
+\itap1\trowd \taflags1 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clmgf \clvertalt \clshdrawnil \clwWidth30165\clftsWidth3 \clheight285 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl200 \clpadr200 \gaph\cellx4320
+\clmrg \clvertalt \clshdrawnil \clwWidth30165\clftsWidth3 \clheight285 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl200 \clpadr200 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+HWJ1 \'e8 stato realizzato utilizzando un completationService, con lo scopo di aumentare lo speed-up raccogliendo i risultati nell'ordine di completamento.\
+L'accesso al buffer \'e8 stato regolato da un Lock, bloccato e sbloccato solo per il prelevamento di un nodo e l'inserimento dei suoi figli.\
+La condizione di terminazione dei thread visitatore \'e8 che lavorano finche non trovano il buffer vuoto.\
+\
+In HWJ3, il worker thread non esegue come si potrebbe pensare a primo impatto, una fork e una join dei suoi rispettivi figli, ma esegue la fork e la join di un solo figlio, mentre richiama in maniera ricorsivi, il metodo compute() principale sull'altro figlio.\
+Questa sottigliezza che ho scoperto casualmente, aumenta lo speed-up, probabilmente grazie alla diminuzione di creazione del numero di task.\
+\cell 
+\pard\intbl\itap1\cell \lastrow\row
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs22 \cf0 \kerning1\expnd0\expndtw0 SPEED-UP:
+\f2\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs22 \cf0 Le misurazioni sullo speed-up sono state effettuate su un 2,9 GHz Intel Core i5, con quattro cpu fisiche.\
+\
+I valori di speed-up sono calcolati come segue:\
+	- 5 esecuzioni di warm up seriali\
+	- 5 esecuzioni seriale, di cui effettuo una media\
+	- 5 esecuzioni di warm up concorrenti\
+	- 5 esecuzioni concorrenti di cui effettuo la media\
+\
+	lo speed-up \'e8 calcolato come la media seriale diviso la media concorrente.
+\f2\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
+
+\f1 \cf0 Al fine di rendere l'esecuzione delle tre parti dell'homework pi\'f9 veloci, ho limitato le prove fino ad alberi di profondit\'e0 12.\
+Qui sotto, ho inserito la stampa anche per alberi di profondit\'e0 fino a 18, i quali per\'f2 avrebbero fatto superare il tempo complessivo di due minuti.
+\f2 \
+\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs22 \cf0 HWJ1 - BUFFER ILLIMITATO:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 speed-up albero bilanciato:\
+\
+profondit\'e0 7 (255 nodi)   speed-up: 1.8888888\
+profondit\'e0 8 (511 nodi)   speed-up: 3.34375\
+profondit\'e0 9 (1023 nodi)   speed-up: 2.9848487\
+profondit\'e0 10 (2047 nodi)   speed-up: 3.362069\
+profondit\'e0 11 (4095 nodi)   speed-up: 3.3086956\
+profondit\'e0 12 (8191 nodi)   speed-up: 3.3120878\
+profondit\'e0 13 (16383 nodi)   speed-up: 3.4418602\
+profondit\'e0 14 (32767 nodi)   speed-up: 3.278167\
+profondit\'e0 15 (65535 nodi)   speed-up: 3.3400664\
+profondit\'e0 16 (131071 nodi)   speed-up: 3.306234\
+profondit\'e0 17 (262143 nodi)   speed-up: 3.3104713\
+profondit\'e0 18 (524287 nodi)   speed-up: 3.4059541\
+\
+speed-up albero sbilanciato:\
+\
+profondit\'e0 7 (127 nodi)   speed-up: 1.846154\
+profondit\'e0 8 (255 nodi)   speed-up: 3.2\
+profondit\'e0 9 (511 nodi)   speed-up: 3.2666667\
+profondit\'e0 10 (1023 nodi)   speed-up: 3.2280703\
+profondit\'e0 11 (2047 nodi)   speed-up: 3.3603601\
+profondit\'e0 12 (4095 nodi)   speed-up: 3.36\
+profondit\'e0 13 (8191 nodi)   speed-up: 3.387528\
+profondit\'e0 14 (16383 nodi)   speed-up: 3.3214684\
+profondit\'e0 15 (32767 nodi)   speed-up: 3.3392658\
+profondit\'e0 16 (65535 nodi)   speed-up: 3.3206763\
+profondit\'e0 17 (131071 nodi)   speed-up: 3.3603263\
+profondit\'e0 18 (262143 nodi)   speed-up: 3.4146779\
+\
+\
+\
+\
+\
+HWJ3 - FRAMEWORK FORK & JOIN\
+\
+speed-up albero bilanciato:\
+\
+profondit\'e0 7 (255 nodi)   speed-up: 1.2173913\
+profondit\'e0 8 (511 nodi)   speed-up: 3.2195122\
+profondit\'e0 9 (1023 nodi)   speed-up: 2.5822785\
+profondit\'e0 10 (2047 nodi)   speed-up: 2.75\
+profondit\'e0 11 (4095 nodi)   speed-up: 3.0258303\
+profondit\'e0 12 (8191 nodi)   speed-up: 3.1179998\
+profondit\'e0 13 (16383 nodi)   speed-up: 3.1291964\
+profondit\'e0 14 (32767 nodi)   speed-up: 3.1332655\
+profondit\'e0 15 (65535 nodi)   speed-up: 3.106426\
+profondit\'e0 16 (131071 nodi)   speed-up: 3.1113925\
+profondit\'e0 17 (262143 nodi)   speed-up: 3.1080713\
+profondit\'e0 18 (524287 nodi)   speed-up: 3.2750883\
+\
+speed-up albero sbilanciato:\
+\
+profondit\'e0 7 (127 nodi)   speed-up: 1.0\
+profondit\'e0 8 (255 nodi)   speed-up: 3.0555556\
+profondit\'e0 9 (511 nodi)   speed-up: 2.575\
+profondit\'e0 10 (1023 nodi)   speed-up: 2.2386365\
+profondit\'e0 11 (2047 nodi)   speed-up: 2.4213836\
+profondit\'e0 12 (4095 nodi)   speed-up: 2.8447654\
+profondit\'e0 13 (8191 nodi)   speed-up: 3.0823529\
+profondit\'e0 14 (16383 nodi)   speed-up: 3.110092\
+profondit\'e0 15 (32767 nodi)   speed-up: 3.091093\
+profondit\'e0 16 (65535 nodi)   speed-up: 3.1107426\
+profondit\'e0 17 (131071 nodi)   speed-up: 3.1205413\
+profondit\'e0 18 (262143 nodi)   speed-up: 3.1803572\
+\
+\
+\
+\
+\
+HWJ4 - PARALLEL STREAM\
+\
+speed-up albero bilanciato:\
+\
+profondit\'e0 7 (255 nodi)   speed-up: 2.409091\
+profondit\'e0 8 (511 nodi)   speed-up: 3.030303\
+profondit\'e0 9 (1023 nodi)   speed-up: 3.338983\
+profondit\'e0 10 (2047 nodi)   speed-up: 3.3913043\
+profondit\'e0 11 (4095 nodi)   speed-up: 3.213675\
+profondit\'e0 12 (8191 nodi)   speed-up: 3.3181818\
+profondit\'e0 13 (16383 nodi)   speed-up: 3.1430032\
+profondit\'e0 14 (32767 nodi)   speed-up: 3.273063\
+profondit\'e0 15 (65535 nodi)   speed-up: 3.2850983\
+profondit\'e0 16 (131071 nodi)   speed-up: 3.2846715\
+profondit\'e0 17 (262143 nodi)   speed-up: 3.3438538\
+profondit\'e0 18 (524287 nodi)   speed-up: 3.3791658\
+\
+speed-up albero sbilanciato:\
+\
+profondit\'e0 7 (127 nodi)   speed-up: 3.125\
+profondit\'e0 8 (255 nodi)   speed-up: 3.3999999\
+profondit\'e0 9 (511 nodi)   speed-up: 3.3333333\
+profondit\'e0 10 (1023 nodi)   speed-up: 3.0833333\
+profondit\'e0 11 (2047 nodi)   speed-up: 3.3245616\
+profondit\'e0 12 (4095 nodi)   speed-up: 2.9727626\
+profondit\'e0 13 (8191 nodi)   speed-up: 3.3138528\
+profondit\'e0 14 (16383 nodi)   speed-up: 3.2540193\
+profondit\'e0 15 (32767 nodi)   speed-up: 3.0078974\
+profondit\'e0 16 (65535 nodi)   speed-up: 3.2469895\
+profondit\'e0 17 (131071 nodi)   speed-up: 3.3008472\
+profondit\'e0 18 (262143 nodi)   speed-up: 3.3315923\
+\
+}

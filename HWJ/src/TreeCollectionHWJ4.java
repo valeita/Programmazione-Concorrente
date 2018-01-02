@@ -8,9 +8,8 @@ import javax.swing.plaf.synth.SynthSpinnerUI;
 public class TreeCollectionHWJ4<T> implements Spliterator<T> {
 
 	private Node node;
-	Boolean sx;
-	Boolean dx;
-	
+	private Boolean sx;
+	private Boolean dx;
 
 
 	
@@ -19,29 +18,24 @@ public class TreeCollectionHWJ4<T> implements Spliterator<T> {
 		this.node = node;
 		this.sx = false;
 		this.dx = false;
-		
-
 	}
 
 
 	@Override
 	public boolean tryAdvance(Consumer<? super T> action) {
 
-		System.out.println("sono entrato in tryAdvance");
 		if(node == null) { return false; }
-
+		else {
 		action.accept((T) node);
-		node = node.getDx();
-
 		
-		return true;
+		return false;
+		}
 	}
 
 
 	@Override
 	public Spliterator<T> trySplit() {
-		
-		System.out.println("sono entrato in trysplit");
+
 		if(sx == false) {
 			sx = true;
 			return new TreeCollectionHWJ4(node.getSx());
@@ -50,17 +44,15 @@ public class TreeCollectionHWJ4<T> implements Spliterator<T> {
 			dx = true;
 			return new TreeCollectionHWJ4(node.getDx());
 		}
-		
 		return null;
-		
-
 	}
 
 
 	@Override
 	public long estimateSize() {
-		
-		return 0;
+
+		if(node!= null) { return Long.MAX_VALUE; }
+		else { return 0; }
 	}
 
 
@@ -69,8 +61,4 @@ public class TreeCollectionHWJ4<T> implements Spliterator<T> {
 		
 		return CONCURRENT;
 	}
-
-
-
-
 }

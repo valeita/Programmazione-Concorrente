@@ -98,7 +98,7 @@ public class TestHWJ1 {
 		
 	public static void main(String[] args) {
 		
-		System.out.println("HWJ1:\n");
+		System.out.println("HWJ1 - BUFFER ILLIMITATO\n");
 		TreeGenerator Balancedtree = new TreeGenerator();
 		SpeedUpWatch watcher = new SpeedUpWatch(new BinaryTreeAdderProcessingHWJ1(1), new BinaryTreeAdderProcessingHWJ1(Runtime.getRuntime().availableProcessors()));
 

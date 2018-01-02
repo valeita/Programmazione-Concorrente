@@ -11,11 +11,9 @@ public class BinaryTreeAdderProcessingHWJ4 implements BinaryTreeAdder{
 	public int computeOnerousSum(Node root) {
 		
 		Spliterator<Node> spliterator = new TreeCollectionHWJ4<Node>(root);
-		Stream<Node> stream = StreamSupport.stream(spliterator, true); //mettendo false ritorna uno stream sequenziale. utile per lo speed-up
+		Stream<Node> stream = StreamSupport.stream(spliterator, true); 
 		
-		int sum = stream.parallel().mapToInt(w-> new FakeProcessor(1500).onerousFunction(w.getValue())).sum();
-
-		return sum;
+		return stream.parallel().mapToInt(w-> new FakeProcessor(1500).onerousFunction(w.getValue())).sum();
 	}
 
 }
